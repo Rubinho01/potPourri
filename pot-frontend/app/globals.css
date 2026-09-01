@@ -3,11 +3,23 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --pp-olive: #4a5c4a;
+  --pp-olive-deep: #3f5244;
+  --pp-sage: #b2beb5;
+  --pp-sage-muted: #9aa89c;
+  --pp-mist: #e6e9e4;
+  --pp-paper: #f5f5f3;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-pp-olive: var(--pp-olive);
+  --color-pp-olive-deep: var(--pp-olive-deep);
+  --color-pp-sage: var(--pp-sage);
+  --color-pp-sage-muted: var(--pp-sage-muted);
+  --color-pp-mist: var(--pp-mist);
+  --color-pp-paper: var(--pp-paper);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
