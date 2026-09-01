@@ -1,28 +1,19 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
+    "target": "ES2022",
     "module": "commonjs",
-    "lib": ["ES2020"],
+    "lib": ["ES2022"],
+    "outDir": "./dist",
+    "rootDir": "./src",
     "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "paths": {
-      "@src/*": ["./src/*"]
-    },
-    "useUnknownInCatchVariables": false,
-    "types": ["vitest/globals"]
+    "resolveJsonModule": true,
+    "sourceMap": true
   },
-  "ts-node": {
-    "swc": true,
-    "require": ["tsconfig-paths/register", "dotenv/config"],
-  },
-  "include": [
-    "src/**/*.ts",
-    "tests/**/*.ts",
-    "scripts",
-    "eslint.config.ts",
-    "vitest.config.mts"
-  ],
-  "exclude": ["src/public/*"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
 }

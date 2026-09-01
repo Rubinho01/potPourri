@@ -1,39 +1,58 @@
-## About
+# Backend TypeScript + Express + Sequelize
 
-This project was created with [express-generator-typescript](https://github.com/seanpmaxwell/express-generator-typescript).
+Esqueleto mínimo com boas práticas: separação em camadas (routes → controllers → services →
+models), tratamento de erros centralizado, validação de entrada com zod e conexão Sequelize
+já configurada.
 
-## Available Scripts
+## Como rodar
 
-### `npm run clean-install`
+```bash
+npm install
+cp .env.example .env
+# edite o .env com os dados do seu banco
+npm run dev
+```
 
-Remove the existing `node_modules/` folder, `package-lock.json`, and reinstall all library modules.
+O `sync()` do Sequelize roda automaticamente em desenvolvimento e cria a tabela `users`
+se ela não existir. **Em produção, troque por migrations** (`sequelize-cli`), nunca use
+`sync()` fora de dev.
 
-### `npm run dev` 
+## Testando a rota de exemplo
 
-Run the server in development with hot reloading and browser refresh (see `package.json` for all `npm run dev` variations)<br/>
+```bash
+# criar usuário
+curl -X POST http://localhost:3333/api/users \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Maria","email":"maria@email.com"}'
 
-**IMPORTANT** development mode uses `swc` for performance reasons which DOES NOT check for typescript errors. Run `npm run type-check` to check for type errors. NOTE: you should use your IDE to prevent most type errors.
+# listar usuários
+curl http://localhost:3333/api/users
 
-### `npm test`
+# buscar por id
+curl http://localhost:3333/api/users/1
 
-Run unit-tests with <a href="https://vitest.dev/guide/">vitest</a>.
+# deletar
+curl -X DELETE http://localhost:3333/api/users/1
+```
 
-### `npm run lint`
+## Estrutura
 
-Check for linting errors.
+```
+src/
+├── config/       # env.ts e conexão com o banco (database.ts)
+├── models/       # models Sequelize (User de exemplo)
+├── routes/       # definição de endpoints
+├── controllers/  # camada HTTP (req/res)
+├── services/     # regra de negócio, sem saber de HTTP
+├── middlewares/  # errorHandler, asyncHandler
+├── utils/        # AppError, schemas de validação (zod)
+└── server.ts     # entrypoint
+```
 
-### `npm run build`
+## Próximos passos sugeridos
 
-Build the project for production.
-
-### `npm start`
-
-Run the production build (Must be built first).
-
-### `npm run type-check`
-
-Check for typescript errors.
-
-## Additional Notes
-
-- If `npm run dev` gives you issues with bcrypt on MacOS you may need to run: `npm rebuild bcrypt --build-from-source`.
+- Trocar `mysql2` por `pg`/`pg-hstore` se for usar PostgreSQL (ajuste `DB_DIALECT` no `.env`)
+- Configurar `sequelize-cli` para migrations reais
+- Adicionar autenticação (JWT) como middleware em `middlewares/`
+- Adicionar testes (Jest + Supertest)
+- Configurar ESLint + Prettier
