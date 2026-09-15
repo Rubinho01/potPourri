@@ -1,6 +1,7 @@
 "use client";
 
-import type { FormEvent } from "react";
+import { useActionState } from "react";
+import { loginAction, type LoginState } from "@/app/login/actions";
 
 function UserIcon() {
   return (
@@ -27,15 +28,14 @@ function UserIcon() {
 const fieldClassName =
   "h-11 w-[86%] rounded-[10px] bg-white px-4 text-center text-[11px] tracking-[0.16em] text-neutral-700 placeholder:uppercase placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-pp-olive/20";
 
+const initialState: LoginState = {};
+
 export function LoginForm() {
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-  }
+  const [state, formAction, pending] = useActionState(loginAction, initialState);
 
   return (
     <form
-      onSubmit={handleSubmit}
-      noValidate
+      action={formAction}
       className="relative z-20 flex w-[90%] max-w-[410px] flex-col items-center rounded-[18px] bg-pp-sage/55 px-6 py-10 shadow-[0_8px_30px_rgba(70,80,70,0.08)] backdrop-blur-md pointer-events-auto sm:px-8"
     >
       <UserIcon />
@@ -49,6 +49,8 @@ export function LoginForm() {
         type="email"
         placeholder="EMAIL"
         autoComplete="email"
+        required
+        disabled={pending}
         className={fieldClassName}
       />
 
@@ -61,14 +63,23 @@ export function LoginForm() {
         type="password"
         placeholder="SENHA"
         autoComplete="current-password"
+        required
+        disabled={pending}
         className={`${fieldClassName} mt-4`}
       />
 
+      {state.error && (
+        <p role="alert" className="mt-4 text-center text-[11px] tracking-wide text-red-700">
+          {state.error}
+        </p>
+      )}
+
       <button
         type="submit"
-        className="relative z-20 mt-7 h-10 w-[130px] cursor-pointer rounded-[10px] bg-white text-[11px] font-medium tracking-[0.18em] text-neutral-800 uppercase transition-colors hover:bg-pp-paper"
+        disabled={pending}
+        className="relative z-20 mt-7 h-10 w-[130px] cursor-pointer rounded-[10px] bg-white text-[11px] font-medium tracking-[0.18em] text-neutral-800 uppercase transition-colors hover:bg-pp-paper disabled:cursor-not-allowed disabled:opacity-60"
       >
-        LOGIN
+        {pending ? "ENTRANDO..." : "LOGIN"}
       </button>
     </form>
   );
