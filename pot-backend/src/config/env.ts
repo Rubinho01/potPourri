@@ -21,4 +21,11 @@ export const env = {
     password: getEnvVar('DB_PASSWORD'),
     dialect: getEnvVar('DB_DIALECT', 'mysql') as 'mysql' | 'postgres' | 'sqlite' | 'mariadb',
   },
+  jwt: {
+    secret: getEnvVar('JWT_SECRET'),
+    expiresIn: getEnvVar('JWT_EXPIRES_IN', '15m'),
+    refreshSecret: getEnvVar('JWT_REFRESH_SECRET'),
+    refreshExpiresIn: getEnvVar('JWT_REFRESH_EXPIRES_IN', '7d'),
+    refreshExpiresInDays: Number(getEnvVar('JWT_REFRESH_EXPIRES_IN_DAYS', '7')),
+  },
 };

@@ -1,6 +1,8 @@
 import { User } from './user.model';
+import { RefreshToken } from './refreshToken.model';
 
-// Se no futuro houver relacionamentos entre models, defina-os aqui.
-// Ex: User.hasMany(Post); Post.belongsTo(User);
+User.hasMany(RefreshToken, { foreignKey: 'userId', onDelete: 'CASCADE' });
+RefreshToken.belongsTo(User, { foreignKey: 'userId' });
 
-export { User };
+export { User, RefreshToken };
+
