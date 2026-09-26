@@ -10,13 +10,14 @@ interface PieceAttributes {
   photoPublicId: string | null; // id da imagem no Cloudinary, usado pra poder deletar/substituir
   link: string | null;
   size: string;
+  available: boolean;
   creatorId: number; // FK -> users.id
   categoryId: number; // FK -> categories.id
   createdAt?: Date;
   updatedAt?: Date;
 }
 
-type PieceCreationAttributes = Optional<PieceAttributes, 'id' | 'photoPublicId' | 'link'>;
+type PieceCreationAttributes = Optional<PieceAttributes, 'id' | 'photoPublicId' | 'link' | 'available'>;
 
 export class Piece extends Model<PieceAttributes, PieceCreationAttributes> implements PieceAttributes {
   declare id: number;
@@ -25,6 +26,7 @@ export class Piece extends Model<PieceAttributes, PieceCreationAttributes> imple
   declare photoPublicId: string | null;
   declare link: string | null;
   declare size: string;
+  declare available: boolean;
   declare creatorId: number;
   declare categoryId: number;
   declare readonly createdAt: Date;
@@ -57,6 +59,11 @@ Piece.init(
     size: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    available: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: true,
     },
     creatorId: {
       type: DataTypes.INTEGER,

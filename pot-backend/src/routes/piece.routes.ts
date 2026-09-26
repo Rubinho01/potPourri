@@ -12,6 +12,7 @@ router.get('/', asyncHandler(pieceController.list));
 router.get('/:id', asyncHandler(pieceController.getById));
 router.post('/', authMiddleware, upload.single('photo'), asyncHandler(pieceController.create));
 router.put('/:id', authMiddleware, upload.single('photo'), asyncHandler(pieceController.update));
+router.patch('/:id/availability', authMiddleware, asyncHandler(pieceController.updateAvailability));
 router.delete('/:id', authMiddleware, asyncHandler(pieceController.remove));
 
 export default router;

@@ -11,5 +11,14 @@ export const createPieceSchema = z.object({
 
 export const updatePieceSchema = createPieceSchema.partial();
 
+// Corpo esperado por PATCH /pieces/:id/availability. Vem como JSON normal
+// (sem upload de arquivo), então não precisa de z.coerce aqui.
+export const updateAvailabilitySchema = z.object({
+  available: z.boolean({
+    required_error: 'available é obrigatório',
+    invalid_type_error: 'available precisa ser true ou false',
+  }),
+});
+
 export type CreatePieceDTO = z.infer<typeof createPieceSchema>;
 export type UpdatePieceDTO = z.infer<typeof updatePieceSchema>;

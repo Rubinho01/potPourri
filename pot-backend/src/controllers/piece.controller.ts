@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { pieceService } from '../services/piece.service';
-import { createPieceSchema, updatePieceSchema } from '../utils/piece.schema';
+import { createPieceSchema, updatePieceSchema, updateAvailabilitySchema } from '../utils/piece.schema';
 import { AppError } from '../utils/AppError';
 import { uploadBufferToCloudinary } from '../utils/cloudinaryUpload';
 
@@ -70,6 +70,21 @@ export const pieceController = {
       ...photoData,
     });
 
+    res.json(piece);
+  },
+
+  async updateAvailability(req: Request, res: Response) {
+    const id = Number(req.params.id);
+    if (Number.isNaN(id)) {
+      throw new AppError('Id inválido', 400);
+    }
+
+    const parsed = updateAvailabilitySchema.safeParse(req.body);
+    if (!parsed.success) {
+      throw new AppError(parsed.error.issues[0].message, 422);
+    }
+
+    const piece = await pieceService.updateAvailability(id, req.user!.id, parsed.data.available);
     res.json(piece);
   },
 

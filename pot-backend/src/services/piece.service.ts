@@ -85,6 +85,19 @@ export const pieceService = {
     return this.findById(piece.id);
   },
 
+  async updateAvailability(id: number, requesterId: number, available: boolean) {
+    const piece = await Piece.findByPk(id);
+    if (!piece) {
+      throw new AppError('Peça não encontrada', 404);
+    }
+    if (piece.creatorId !== requesterId) {
+      throw new AppError('Você só pode alterar a disponibilidade de peças criadas por você', 403);
+    }
+    piece.available = available;
+    await piece.save();
+    return this.findById(piece.id);
+  },
+
   async delete(id: number, requesterId: number) {
     const piece = await Piece.findByPk(id);
     if (!piece) {
