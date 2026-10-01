@@ -1,4 +1,5 @@
 import dotenv from 'dotenv';
+import { cloudinary } from './cloudinary';
 
 dotenv.config();
 
@@ -28,4 +29,9 @@ export const env = {
     refreshExpiresIn: getEnvVar('JWT_REFRESH_EXPIRES_IN', '7d'),
     refreshExpiresInDays: Number(getEnvVar('JWT_REFRESH_EXPIRES_IN_DAYS', '7')),
   },
+  cloudinary: {
+    cloudName: getEnvVar('CLOUDINARY_CLOUD_NAME'),
+    apiKey: getEnvVar('CLOUDINARY_API_KEY'),
+    apiSecret: getEnvVar('CLOUDINARY_API_SECRET')
+  }
 };

@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+import { MulterError } from 'multer';
 import { AppError } from '../utils/AppError';
 
 export function errorHandler(
@@ -10,6 +11,12 @@ export function errorHandler(
 ): void {
   if (err instanceof AppError) {
     res.status(err.statusCode).json({ message: err.message });
+    return;
+  }
+
+  // Erros do multer (ex: arquivo maior que o limite) viram 422 em vez de 500
+  if (err instanceof MulterError) {
+    res.status(422).json({ message: `Erro no upload: ${err.message}` });
     return;
   }
 
