@@ -40,6 +40,7 @@ Rota: `POST /api/auth/register` (definida em `pot-backend/src/routes/auth.routes
 
 - O e-mail deve ser único. Se já existir um usuário com ele, a API retorna erro **409** com a mensagem "Já existe um usuário com esse e-mail".
 - Os dados são validados na entrada com Zod (`registerSchema`), e o model também exige e-mail válido e campos não nulos.
+- Se algum campo for inválido (por exemplo, senha com menos de 6 caracteres), a API retorna erro **422** com o corpo `{"message": "Senha deve ter ao menos 6 caracteres"}` (a mensagem muda conforme o campo).
 - A senha nunca é armazenada em texto puro: ela é hasheada com bcrypt (10 rounds) antes de ser salva.
 - A senha nunca é devolvida em respostas da API, pois o model a remove na serialização do usuário.
 
