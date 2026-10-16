@@ -26,12 +26,40 @@ Funcionalidades incluídas: cadastro/login de usuário, cadastro de brechó, CRU
 
 Fora do escopo do MVP: pagamento/checkout online, chat entre usuários, sistema de avaliações e notificações.
 
+## Regras de cadastro de novos usuários
+
+Rota: `POST /api/auth/register` (definida em `pot-backend/src/routes/auth.routes.ts`, montada em `src/routes/index.ts` com o prefixo `/api` configurado no `src/server.ts`).
+
+**Campos obrigatórios**
+
+- `name`: mínimo de 2 caracteres
+- `email`: formato de e-mail válido
+- `password`: mínimo de 6 caracteres
+
+**Regras**
+
+- O e-mail deve ser único. Se já existir um usuário com ele, a API retorna erro **409** com a mensagem "Já existe um usuário com esse e-mail".
+- Os dados são validados na entrada com Zod (`registerSchema`), e o model também exige e-mail válido e campos não nulos.
+- A senha nunca é armazenada em texto puro: ela é hasheada com bcrypt (10 rounds) antes de ser salva.
+- A senha nunca é devolvida em respostas da API, pois o model a remove na serialização do usuário.
+
+**Resposta em caso de sucesso**
+
+- O usuário já fica autenticado: a API devolve um `accessToken` e um `refreshToken` (JWT), sem necessidade de fazer login em seguida.
+
+**Fora do escopo do MVP**
+
+- Confirmação de e-mail
+- Recuperação de senha
+- Login social
+
 ## Stack
 
 - **Frontend:** Next.js (React) + Tailwind CSS + shadcn/ui
-- **Backend:** Node.js com Express
+- **Backend:** Node.js com Express (TypeScript) + Sequelize
 - **Banco de dados:** PostgreSQL
-- **Autenticação/autorização:** JWT (implementação própria ou Auth.js)
+- **Validação:** Zod
+- **Autenticação/autorização:** JWT próprio (access token + refresh token) com senhas protegidas por bcrypt
 - **Hospedagem/deploy:** Vercel (frontend) + Render/Railway (backend + PostgreSQL)
 - **Testes:** Jest
 - **CI/CD:** GitHub Actions
@@ -43,12 +71,19 @@ Arquitetura cliente-servidor simples — Frontend (Next.js) → API REST (Expres
 
 ## Instalação/execução
 
-- **Instalação:** `cd frontend && npm install` / `cd backend && npm install`
-- **Execução:** `npm run dev` (frontend, porta 3000) / `node index.js` (backend, porta 3001)
+- **Instalação:** `cd pot-frontend && npm install` / `cd pot-backend && npm install`
+- **Execução:** `npm run dev` em cada pasta (`pot-frontend` e `pot-backend`). A porta do backend é definida no `.env`.
 
 ## Variáveis de ambiente
 
-Ver .env.example (criar arquivo com variáveis sensíveis, ex.: DATABASE_URL)
+No backend, copie o arquivo de exemplo e preencha os valores:
+
+```bash
+cd pot-backend
+cp .env.example .env
+```
+
+O `.env` contém dados sensíveis (ex.: `DATABASE_URL`, chaves JWT) e **não deve ser commitado**.
 
 ## Backlog
 
