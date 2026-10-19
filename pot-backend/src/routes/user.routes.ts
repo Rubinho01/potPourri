@@ -6,7 +6,7 @@ const router = Router();
 
 router.get('/', asyncHandler(userController.list));
 router.get('/:id', asyncHandler(userController.getById));
-router.post('/', asyncHandler(userController.create));
+router.post('/', authMiddleware, asyncHandler(userController.create));
 router.delete('/:id', asyncHandler(userController.remove));
 
 export default router;
