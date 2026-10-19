@@ -1,0 +1,2 @@
+"use client";import {SiteShell} from '@/components/site-shell';import {Section,PageTitle} from '@/components/common';import {PrivateArea} from '@/components/private-area';import {PieceManager} from '@/components/piece-manager';
+export default function MyPieces(){return <SiteShell><Section><PageTitle eyebrow="Área do usuário" title="Minhas peças" description="Cadastre, edite e controle a disponibilidade das suas peças."/><PrivateArea>{user=><PieceManager user={user}/>}</PrivateArea></Section></SiteShell>}

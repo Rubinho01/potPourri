@@ -27,7 +27,7 @@ async function start() {
   // sync() aqui é só pra facilitar o começo em desenvolvimento.
   if (env.nodeEnv === 'development') {
     const { sequelize } = await import('./config/database');
-    await sequelize.sync({force: true});
+    await sequelize.sync();
   }
 
   app.listen(env.port, () => {

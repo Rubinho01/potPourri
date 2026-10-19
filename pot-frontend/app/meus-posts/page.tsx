@@ -1,0 +1,2 @@
+"use client";import {SiteShell} from '@/components/site-shell';import {Section,PageTitle} from '@/components/common';import {PrivateArea} from '@/components/private-area';import {PostManager} from '@/components/post-manager';
+export default function MyPosts(){return <SiteShell><Section><PageTitle eyebrow="Área do usuário" title="Meus looks" description="Monte combinações com as suas peças e compartilhe com a comunidade."/><PrivateArea>{user=><PostManager user={user}/>}</PrivateArea></Section></SiteShell>}

@@ -1,38 +1,5 @@
 @import "tailwindcss";
-
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-  --pp-olive: #4a5c4a;
-  --pp-olive-deep: #3f5244;
-  --pp-sage: #b2beb5;
-  --pp-sage-muted: #9aa89c;
-  --pp-mist: #e6e9e4;
-  --pp-paper: #f5f5f3;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-pp-olive: var(--pp-olive);
-  --color-pp-olive-deep: var(--pp-olive-deep);
-  --color-pp-sage: var(--pp-sage);
-  --color-pp-sage-muted: var(--pp-sage-muted);
-  --color-pp-mist: var(--pp-mist);
-  --color-pp-paper: var(--pp-paper);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-}
+:root{--background:#fcfcfa;--foreground:#27372c;--pp-olive:#4a5c4a;--pp-olive-deep:#34483a;--pp-sage:#b2beb5;--pp-sage-muted:#7f9282;--pp-mist:#e6e9e4;--pp-paper:#f5f5f3}
+@theme inline{--color-background:var(--background);--color-foreground:var(--foreground);--color-pp-olive:var(--pp-olive);--color-pp-olive-deep:var(--pp-olive-deep);--color-pp-sage:var(--pp-sage);--color-pp-sage-muted:var(--pp-sage-muted);--color-pp-mist:var(--pp-mist);--color-pp-paper:var(--pp-paper);--font-sans:var(--font-geist-sans);--font-mono:var(--font-geist-mono)}
+body{background:var(--background);color:var(--foreground);font-family:Arial,Helvetica,sans-serif}a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid #658267;outline-offset:2px}
+.field{width:100%;border:1px solid #d8dfd7;border-radius:10px;background:white;padding:12px 14px;font-size:14px;color:#24352a} .field:disabled{opacity:.55}.field-label{display:block;margin-bottom:6px;font-size:12px;font-weight:600;color:#435648}.action-button{cursor:pointer;border-radius:999px;background:var(--pp-olive);padding:12px 23px;color:white;font-size:12px;font-weight:bold;letter-spacing:.06em;transition:background .2s}.action-button:hover{background:var(--pp-olive-deep)}.action-button:disabled{cursor:not-allowed;opacity:.55}.secondary-button{cursor:pointer;border:1px solid var(--pp-sage);border-radius:999px;padding:10px 18px;font-size:12px;color:var(--pp-olive-deep)}.secondary-button:disabled{opacity:.5}

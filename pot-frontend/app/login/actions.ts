@@ -56,5 +56,5 @@ export async function loginAction(_prevState: LoginState, formData: FormData): P
     maxAge: REFRESH_TOKEN_MAX_AGE,
   });
 
-  redirect("/");
+  redirect("/minha-conta");
 }

@@ -1,69 +1,15 @@
-import Image from "next/image";
-
-export default function Home() {
-  return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
-  );
+"use client";
+import Link from 'next/link';
+import {SiteShell} from '@/components/site-shell';
+import {Section,PieceCard,PostCard,StateMessage,PrimaryLink} from '@/components/common';
+import {useResource} from '@/components/use-resource';
+import type {Piece,Post} from '@/lib/types';
+export default function Home(){
+ const pieces=useResource<Piece[]>('/pieces');const posts=useResource<Post[]>('/posts?isActive=true');
+ return <SiteShell>
+ <section className="relative overflow-hidden bg-pp-paper"><div className="pointer-events-none absolute -right-20 -top-32 size-[500px] rotate-45 rounded-[100px] bg-pp-sage/40"/><div className="pointer-events-none absolute -bottom-64 right-[16%] size-[520px] rotate-12 rounded-[100px] bg-pp-mist"/><div className="relative mx-auto flex min-h-[490px] max-w-7xl flex-col justify-center gap-6 px-5 py-20 sm:px-8"><p className="text-xs font-bold uppercase tracking-[.28em] text-pp-sage-muted">Uma nova história começa aqui</p><h1 className="max-w-3xl font-serif text-5xl leading-[1.13] text-pp-olive-deep sm:text-7xl">O estilo se reinventa. <em>As peças também.</em></h1><p className="max-w-lg text-base leading-8 text-neutral-600">Encontre peças únicas, descubra novos looks e faça parte de uma moda mais consciente.</p><div className="flex flex-wrap gap-3"><PrimaryLink href="/catalogo">Explorar peças</PrimaryLink><Link href="/looks" className="inline-flex items-center rounded-full border border-pp-olive px-7 py-3 text-xs font-bold uppercase tracking-widest text-pp-olive">Descobrir looks</Link></div></div></section>
+ <Section><div className="mb-7 flex flex-wrap items-end justify-between gap-4"><div><p className="mb-2 text-xs uppercase tracking-[.2em] text-pp-sage-muted">Escolhas para você</p><h2 className="font-serif text-3xl text-pp-olive-deep">Peças recém-chegadas</h2></div><Link className="text-sm font-semibold text-pp-olive underline" href="/catalogo">Ver todas →</Link></div>{pieces.error?<StateMessage error text={pieces.error}/>:pieces.loading?<StateMessage text="Carregando peças..."/>:pieces.data?.some(p=>p.available)?<div className="grid grid-cols-2 gap-4 lg:grid-cols-4">{pieces.data.filter(p=>p.available).slice(0,4).map(p=><PieceCard key={p.id} piece={p}/>)}</div>:<StateMessage text="Ainda não há peças disponíveis. Confira novamente em breve!"/>}</Section>
+ <section className="bg-pp-mist/60"><Section><div className="grid gap-7 md:grid-cols-[1fr_1.4fr] md:items-center"><div><p className="text-xs uppercase tracking-widest text-pp-sage-muted">Consumo consciente</p><h2 className="mt-3 font-serif text-4xl text-pp-olive-deep">Menos descarte.<br/>Mais possibilidades.</h2></div><p className="max-w-xl text-sm leading-8 text-neutral-600">O Pot-Pourri aproxima quem tem peças para compartilhar de quem procura algo especial. Através da moda circular, cada escolha é uma oportunidade de renovar.</p></div></Section></section>
+ <Section><div className="mb-7 flex items-end justify-between gap-3"><h2 className="font-serif text-3xl text-pp-olive-deep">Looks para inspirar</h2><Link className="text-sm font-semibold text-pp-olive underline" href="/looks">Ver looks →</Link></div>{posts.error?<StateMessage text={posts.error} error/>:posts.loading?<StateMessage text="Carregando looks..."/>:posts.data?.length?<div className="grid grid-cols-2 gap-4 lg:grid-cols-4">{posts.data.slice(0,4).map(p=><PostCard key={p.id} post={p}/>)}</div>:<StateMessage text="Ainda não há looks publicados."/>}</Section>
+ </SiteShell>
 }

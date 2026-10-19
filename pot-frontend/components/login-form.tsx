@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import Link from "next/link";
 import { loginAction, type LoginState } from "@/app/login/actions";
 
 function UserIcon() {
@@ -81,6 +82,7 @@ export function LoginForm() {
       >
         {pending ? "ENTRANDO..." : "LOGIN"}
       </button>
+      <p className="mt-5 text-center text-xs text-pp-olive-deep">Ainda não tem uma conta? <Link className="font-bold underline" href="/cadastro">Cadastre-se</Link></p>
     </form>
   );
 }

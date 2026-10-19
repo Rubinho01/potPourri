@@ -1,9 +1,1 @@
-export function SiteTopBar() {
-  return (
-    <div className="w-full bg-pp-olive-deep">
-      <p className="px-4 py-1.5 text-center text-[10px] font-medium tracking-[0.18em] text-white uppercase sm:text-[11px]">
-        WORLDWIDE FREE SHIPPING
-      </p>
-    </div>
-  );
-}
+export function SiteTopBar(){return <div className="bg-pp-olive-deep px-4 py-2 text-center text-[10px] font-semibold uppercase tracking-[.2em] text-white">Moda circular · Estilo com propósito</div>}
