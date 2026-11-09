@@ -49,6 +49,10 @@ comentados em `auth.service.ts`.
 `GET /api/auth/me` (com token) devolve os dados completos do próprio usuário logado,
 incluindo e-mail e role.
 
+O refresh token **não fica salvo puro no banco**: a tabela `refresh_tokens` guarda só o
+hash SHA-256 dele (mesma ideia da senha). Se o banco vazar, os tokens salvos não servem
+pra entrar em nenhuma conta.
+
 ## Usuários
 
 | Rota | Quem pode |
@@ -191,3 +195,14 @@ src/
 - Paginação em listagens
 - Endpoint pra gerenciar fotos de post individualmente
 - Testes (Jest + Supertest)
+
+## Testes
+
+```bash
+npm test          # roda todos os testes uma vez
+npm run test:watch  # fica rodando a cada alteração
+```
+
+Os testes (pasta `tests/`) usam **SQLite em memória**: não precisam do Postgres rodando e
+não mexem no banco de ninguém. Cobrem login/refresh/logout, cadastro só por admin,
+categorias só admin, perfil público sem e-mail e filtros de peças.
