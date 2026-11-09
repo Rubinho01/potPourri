@@ -7,8 +7,8 @@ function isAllowed(parts: string[], method: string) {
   if (!['pieces','posts','users','categories'].includes(resource)||parts.length>3) return false;
   if (id && !/^\d+$/.test(id)) return false;
   if (operation && !(resource==='pieces'&&operation==='availability'||resource==='posts'&&operation==='active')) return false;
-  if (parts.length===1) return method==='GET'||(['pieces','posts','categories'].includes(resource)&&method==='POST');
-  if (parts.length===2) return method==='GET'||(['pieces','posts','categories'].includes(resource)&&['PUT','DELETE'].includes(method));
+  if (parts.length===1) return method==='GET'||(['pieces','posts','categories','users'].includes(resource)&&method==='POST');
+  if (parts.length===2) return method==='GET'||(['pieces','posts','categories'].includes(resource)&&['PUT','DELETE'].includes(method))||(resource==='users'&&method==='DELETE');
   return method==='PATCH';
 }
 async function handler(req:NextRequest, context:{params:Promise<{path:string[]}>}) {
@@ -18,7 +18,8 @@ async function handler(req:NextRequest, context:{params:Promise<{path:string[]}>
     const origin=req.headers.get('origin');
     if (origin && origin!==req.nextUrl.origin) return NextResponse.json({message:'Origem não permitida.'},{status:403});
   }
-  const token=req.method==='GET'?null:await tokenForRequest();
+  // GET também leva o token quando há sessão (ex.: GET /users é só para admin)
+  const token=await tokenForRequest();
   if (req.method!=='GET' && !token) return NextResponse.json({message:'Faça login para continuar.'},{status:401});
   const allowedQueries=new URLSearchParams();
   for (const key of ['categoryId','creatorId','authorId','isActive']) {

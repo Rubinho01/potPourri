@@ -30,6 +30,10 @@ async function start() {
     await sequelize.sync();
   }
 
+  const { ensureUserRoleColumn, bootstrapAdmin } = await import('./config/bootstrapAdmin');
+  await ensureUserRoleColumn();
+  await bootstrapAdmin();
+
   app.listen(env.port, () => {
     console.log(`🚀 Servidor rodando em http://localhost:${env.port}`);
   });

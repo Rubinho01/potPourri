@@ -32,7 +32,7 @@ export const userController = {
     if (Number.isNaN(id)) {
       throw new AppError('Id inválido', 400);
     }
-    await userService.delete(id);
+    await userService.delete(id, req.user!.id);
     res.status(204).send();
   },
 };

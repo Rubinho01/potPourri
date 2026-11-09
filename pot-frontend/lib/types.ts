@@ -1,4 +1,5 @@
-export interface User { id: number; name: string; email?: string }
+export type UserRole = 'admin' | 'user';
+export interface User { id: number; name: string; email?: string; role?: UserRole; createdAt?: string }
 export interface Category { id: number; name: string }
 export interface Piece { id: number; description: string; size: string; photoUrl: string; link: string | null; available: boolean; creatorId: number; categoryId: number; creator?: User; category?: Category; createdAt?: string }
 export interface PostImage { id: number; url: string; order: number }

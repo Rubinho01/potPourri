@@ -4,12 +4,6 @@ import { comparePassword } from '../utils/password';
 import { signAccessToken, signRefreshToken, verifyRefreshToken } from '../utils/jwt';
 import { env } from '../config/env';
 
-interface RegisterInput {
-  name: string;
-  email: string;
-  password: string;
-}
-
 interface LoginInput {
   email: string;
   password: string;
@@ -21,8 +15,11 @@ function refreshExpiryDate(): Date {
   return date;
 }
 
-async function issueTokens(userId: number) {
-  const accessToken = signAccessToken({ sub: userId });
+async function issueTokens(user: User) {
+  const userId = user.id;
+  // O role vai no access token pra rota saber se é admin sem consultar o banco.
+  // Ele dura pouco (15 min), então uma mudança de role vale no próximo refresh.
+  const accessToken = signAccessToken({ sub: userId, role: user.role });
   const refreshToken = signRefreshToken({ sub: userId });
 
   // Guardamos o refresh token no banco pra poder revogar (logout) e conferir
@@ -39,16 +36,8 @@ async function issueTokens(userId: number) {
 }
 
 export const authService = {
-  async register(data: RegisterInput) {
-    const existing = await User.findOne({ where: { email: data.email } });
-    if (existing) {
-      throw new AppError('Já existe um usuário com esse e-mail', 409);
-    }
-
-    // A senha é hasheada automaticamente pelo hook beforeSave do model
-    const user = await User.create(data);
-    return issueTokens(user.id);
-  },
+  // Não existe mais auto-cadastro: novos usuários são criados por um admin
+  // em POST /api/users (ver user.routes.ts).
 
   async login(data: LoginInput) {
     const user = await User.findOne({ where: { email: data.email } });
@@ -61,7 +50,7 @@ export const authService = {
       throw new AppError('Credenciais inválidas', 401);
     }
 
-    return issueTokens(user.id);
+    return issueTokens(user);
   },
 
   async refresh(oldToken: string) {
@@ -84,7 +73,13 @@ export const authService = {
     stored.revoked = true;
     await stored.save();
 
-    return issueTokens(payload.sub);
+    // Busca o usuário de novo pra pegar o role atual (e barrar usuário excluído)
+    const user = await User.findByPk(payload.sub);
+    if (!user) {
+      throw new AppError('Refresh token inválido ou expirado', 401);
+    }
+
+    return issueTokens(user);
   },
 
   async logout(token: string) {

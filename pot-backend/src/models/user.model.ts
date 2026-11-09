@@ -2,24 +2,30 @@ import { DataTypes, Model, Optional } from 'sequelize';
 import { sequelize } from '../config/database';
 import { hashPassword } from '../utils/password';
 
+// Papéis possíveis. Só 'admin' pode cadastrar/excluir usuários.
+export const USER_ROLES = ['admin', 'user'] as const;
+export type UserRole = (typeof USER_ROLES)[number];
+
 // Atributos completos do model
 interface UserAttributes {
   id: number;
   name: string;
   email: string;
   password: string;
+  role: UserRole;
   createdAt?: Date;
   updatedAt?: Date;
 }
 
 // Atributos opcionais na criação (id é gerado pelo banco)
-type UserCreationAttributes = Optional<UserAttributes, 'id'>;
+type UserCreationAttributes = Optional<UserAttributes, 'id' | 'role'>;
 
 export class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
   declare id: number;
   declare name: string;
   declare email: string;
   declare password: string;
+  declare role: UserRole;
   declare readonly createdAt: Date;
   declare readonly updatedAt: Date;
   // Garante que a senha nunca vaza em res.json(user) por acidente
@@ -50,6 +56,12 @@ User.init(
     password: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    role: {
+      type: DataTypes.STRING(20),
+      allowNull: false,
+      defaultValue: 'user',
+      validate: { isIn: [USER_ROLES as unknown as string[]] },
     },
   },
   {

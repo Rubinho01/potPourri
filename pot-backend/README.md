@@ -19,16 +19,54 @@ existentes**. Se você mudar um model e a tabela já existir, apague-a em dev
 
 ## Autenticação (JWT com refresh token)
 
-```bash
-curl -X POST http://localhost:3333/api/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{"name":"Maria","email":"maria@email.com","password":"123456"}'
+**Não existe auto-cadastro.** Regra do projeto: só um **admin** cadastra novos usuários.
 
+### Primeiro admin
+
+Defina no `.env` (veja `.env.example`):
+
+```env
+ADMIN_NAME=Administrador
+ADMIN_EMAIL=admin@potpourri.com
+ADMIN_PASSWORD=troque-esta-senha
+```
+
+Ao iniciar, o servidor cria esse usuário como admin. Se o e-mail já existir, ele é
+promovido a admin (a senha não muda). Em bancos antigos, a coluna `role` da tabela
+`users` é criada automaticamente, sem apagar dados.
+
+### Login
+
+```bash
 curl -X POST http://localhost:3333/api/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email":"maria@email.com","password":"123456"}'
+  -d '{"email":"admin@potpourri.com","password":"troque-esta-senha"}'
 ```
-Demais detalhes (refresh/logout) estão nos comentários do código em `auth.service.ts`.
+
+O access token carrega `sub` (id) e `role` (`admin` ou `user`). Refresh/logout estão
+comentados em `auth.service.ts`.
+
+## Usuários
+
+| Rota | Quem pode |
+| --- | --- |
+| `GET /api/users` | admin |
+| `GET /api/users/:id` | público (perfil do vendedor) |
+| `POST /api/users` | admin |
+| `DELETE /api/users/:id` | admin (não pode excluir a si mesmo) |
+
+```bash
+# admin cadastra um usuário (role é opcional; padrão "user")
+curl -X POST http://localhost:3333/api/users \
+  -H "Authorization: Bearer <ACCESS_TOKEN_DO_ADMIN>" -H "Content-Type: application/json" \
+  -d '{"name":"Maria","email":"maria@email.com","password":"123456","role":"user"}'
+```
+
+Respostas de erro: `401` sem token/token inválido, `403` usuário não é admin,
+`409` e-mail já cadastrado, `422` dados inválidos (ex.: senha com menos de 6 caracteres).
+
+No frontend, o admin cadastra usuários em **Minha conta → Usuários**
+(`/minha-conta/usuarios`). A antiga `/cadastro` redireciona para lá.
 
 ## Categorias
 
