@@ -14,7 +14,13 @@ export const userController = {
     if (Number.isNaN(id)) {
       throw new AppError('Id inválido', 400);
     }
-    const user = await userService.findById(id);
+    const user = await userService.findPublicById(id);
+    res.json(user);
+  },
+
+  // GET /api/auth/me — dados completos do próprio usuário logado (com e-mail e role)
+  async me(req: Request, res: Response) {
+    const user = await userService.findById(req.user!.id);
     res.json(user);
   },
 

@@ -7,6 +7,15 @@ export const userService = {
     return User.findAll();
   },
 
+  // Versão pública (perfil do vendedor): sem e-mail e sem role
+  async findPublicById(id: number) {
+    const user = await User.findByPk(id, { attributes: ['id', 'name', 'createdAt'] });
+    if (!user) {
+      throw new AppError('Usuário não encontrado', 404);
+    }
+    return user;
+  },
+
   async findById(id: number) {
     const user = await User.findByPk(id);
     if (!user) {

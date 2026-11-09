@@ -42,8 +42,6 @@ export async function tokenForRequest(): Promise<string|null> {
 }
 export async function authenticatedUser(): Promise<User|null> {
   const token=await tokenForRequest();if (!token) return null;
-  const id=Number(jwtPayload(token)?.sub);
-  if (!Number.isInteger(id) || id<=0) return null;
-  // Uma rota de usuário é pública no backend; as mutações continuam protegidas pelo JWT validado lá.
-  try { return await apiFetch<User>(`/users/${id}`); } catch { return null; }
+  // /auth/me devolve os dados completos (e-mail e role) só do próprio usuário logado
+  try { return await apiFetch<User>('/auth/me',{headers:{Authorization:`Bearer ${token}`}}); } catch { return null; }
 }

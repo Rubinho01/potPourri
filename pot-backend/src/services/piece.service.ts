@@ -42,11 +42,11 @@ async function ensureCategoryExists(categoryId: number) {
 
 export const pieceService = {
   async findAll(filters: ListFilters) {
-    const where: ListFilters = {};
+    const where: Record<string, unknown> = {};
     if (filters.categoryId) where.categoryId = filters.categoryId;
     if (filters.creatorId) where.creatorId = filters.creatorId;
 
-    return Piece.findAll({ include: includeRelations, order: [['createdAt', 'DESC']] });
+    return Piece.findAll({ where, include: includeRelations, order: [['createdAt', 'DESC']] });
   },
 
   async findById(id: number) {

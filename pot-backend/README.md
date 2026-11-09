@@ -46,12 +46,15 @@ curl -X POST http://localhost:3333/api/auth/login \
 O access token carrega `sub` (id) e `role` (`admin` ou `user`). Refresh/logout estão
 comentados em `auth.service.ts`.
 
+`GET /api/auth/me` (com token) devolve os dados completos do próprio usuário logado,
+incluindo e-mail e role.
+
 ## Usuários
 
 | Rota | Quem pode |
 | --- | --- |
 | `GET /api/users` | admin |
-| `GET /api/users/:id` | público (perfil do vendedor) |
+| `GET /api/users/:id` | público — devolve só `id`, `name` e `createdAt` (sem e-mail) |
 | `POST /api/users` | admin |
 | `DELETE /api/users/:id` | admin (não pode excluir a si mesmo) |
 
@@ -70,7 +73,7 @@ No frontend, o admin cadastra usuários em **Minha conta → Usuários**
 
 ## Categorias
 
-Leitura pública; criar/editar/excluir exige login (qualquer usuário, sem roles por ora).
+Leitura pública; criar/editar/excluir é **só para admin** (`403` para usuário comum).
 
 ```bash
 curl -X POST http://localhost:3333/api/categories \
@@ -80,7 +83,8 @@ curl -X POST http://localhost:3333/api/categories \
 
 ## Peças de moda
 
-Leitura pública. Criar exige login + 1 foto (`multipart/form-data`, campo `photo`).
+Leitura pública, com filtros opcionais `?categoryId=` e `?creatorId=` (combináveis).
+Criar exige login + 1 foto (`multipart/form-data`, campo `photo`).
 Editar/excluir/alterar disponibilidade exigem ser o criador da peça.
 
 ```bash

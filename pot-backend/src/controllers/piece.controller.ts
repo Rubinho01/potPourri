@@ -10,6 +10,9 @@ export const pieceController = {
   async list(req: Request, res: Response) {
     const categoryId = req.query.categoryId ? Number(req.query.categoryId) : undefined;
     const creatorId = req.query.creatorId ? Number(req.query.creatorId) : undefined;
+    if (Number.isNaN(categoryId) || Number.isNaN(creatorId)) {
+      throw new AppError('Filtro inválido: categoryId e creatorId devem ser números', 400);
+    }
     const pieces = await pieceService.findAll({ categoryId, creatorId });
     res.json(pieces);
   },
