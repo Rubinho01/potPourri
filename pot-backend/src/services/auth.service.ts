@@ -3,6 +3,7 @@ import { AppError } from '../utils/AppError';
 import { comparePassword } from '../utils/password';
 import { signAccessToken, signRefreshToken, verifyRefreshToken } from '../utils/jwt';
 import { env } from '../config/env';
+import { hashToken } from '../utils/tokenHash';
 
 interface LoginInput {
   email: string;
@@ -24,10 +25,10 @@ async function issueTokens(user: User) {
 
   // Guardamos o refresh token no banco pra poder revogar (logout) e conferir
   // se ele ainda é válido/não foi reutilizado depois de rotacionado.
-  // Nota: pra um nível extra de segurança, guarde um hash do token em vez do
-  // valor puro (mesma ideia do hashPassword), assim como se faz com senhas.
+  // Só o HASH vai pro banco (mesma ideia do hashPassword): se o banco vazar,
+  // ninguém consegue usar os tokens salvos lá. O cliente recebe o token puro.
   await RefreshToken.create({
-    token: refreshToken,
+    token: hashToken(refreshToken),
     userId,
     expiresAt: refreshExpiryDate(),
   });
@@ -63,7 +64,7 @@ export const authService = {
     }
 
     // 2. confere se ele existe no banco, não foi revogado e não expirou lá também
-    const stored = await RefreshToken.findOne({ where: { token: oldToken } });
+    const stored = await RefreshToken.findOne({ where: { token: hashToken(oldToken) } });
     if (!stored || stored.revoked || stored.expiresAt < new Date()) {
       throw new AppError('Refresh token inválido ou expirado', 401);
     }
@@ -83,7 +84,7 @@ export const authService = {
   },
 
   async logout(token: string) {
-    const stored = await RefreshToken.findOne({ where: { token } });
+    const stored = await RefreshToken.findOne({ where: { token: hashToken(token) } });
     if (stored) {
       stored.revoked = true;
       await stored.save();
