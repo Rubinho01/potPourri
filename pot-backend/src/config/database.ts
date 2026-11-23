@@ -6,6 +6,7 @@ export const sequelize = new Sequelize(env.db.name, env.db.user, env.db.password
   port: env.db.port,
   dialect: env.db.dialect,
   logging: env.nodeEnv === 'development' ? console.log : false,
+  dialectOptions: env.db.ssl ? { ssl: { require: true, rejectUnauthorized: false } } : {},
 });
 
 export async function testConnection(): Promise<void> {
