@@ -21,6 +21,11 @@ export const env = {
     user: getEnvVar('DB_USER'),
     password: getEnvVar('DB_PASSWORD'),
     dialect: getEnvVar('DB_DIALECT', 'mysql') as 'mysql' | 'postgres' | 'sqlite' | 'mariadb',
+    // DB_SSL=true para bancos hospedados que exigem SSL (Neon, Supabase etc.)
+    ssl: getEnvVar('DB_SSL', 'false') === 'true',
+    // DB_SYNC=true cria as tabelas que ainda não existem na inicialização
+    // (necessário no primeiro deploy, já que fora do "development" o sync não roda).
+    sync: getEnvVar('DB_SYNC', 'false') === 'true',
   },
   jwt: {
     secret: getEnvVar('JWT_SECRET'),
