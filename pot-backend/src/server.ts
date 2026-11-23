@@ -5,9 +5,10 @@ import { app } from './app';
 async function start() {
   await testConnection();
 
-  // Em produção, use migrations do Sequelize CLI em vez de sync().
-  // sync() aqui é só pra facilitar o começo em desenvolvimento.
-  if (env.nodeEnv === 'development') {
+  // Em produção, o ideal seria usar migrations do Sequelize CLI em vez de sync().
+  // Aqui o sync() (que só cria tabelas que não existem, sem apagar dados) roda em
+  // desenvolvimento ou quando DB_SYNC=true (ex.: primeiro deploy).
+  if (env.nodeEnv === 'development' || env.db.sync) {
     const { sequelize } = await import('./config/database');
     await sequelize.sync();
   }
